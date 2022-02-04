@@ -1,6 +1,6 @@
 ///*
 // * E Stop Publisher
-// * Author: Muhammad Suleman, Maxwell Nguyen, Roshan Cheriyan, Malachai Smith
+// * Author: Maxwell Nguyen, Roshan Cheriyan, Malachai Smith
 // * Author for led Maxwell Nguyen
 
 #include <ros.h>
@@ -46,9 +46,14 @@ void setup() {
 
 //Main loop that the program runs
 void loop() {
+
+  bool estopBtnState = digitalRead(estop1) || digitalRead(
+    estop2) || digitalRead(estop3) || digitalRead(estop4);
+     
   // Makes the light in stead state
   digitalWrite(lightPin, HIGH);
-  if (flag) {
+  
+  if (flag && estopBtnState) {
     delay(250);
     digitalWrite(lightPin, LOW);
     delay(250);
@@ -56,7 +61,7 @@ void loop() {
   }
 
   // Checks for estop button press event
-  if ((estop1 || estop2 || estop3 || estop4) == LOW) {
+  if (estopBtnState == LOW) {
     bool_msg.data = true;
   } else {
     bool_msg.data = false;
