@@ -50,7 +50,7 @@ void setup() {
 void loop() {
 
   bool estopBtnState = digitalRead(estop1);
-  /**
+  /*
    * || digitalRead(
     estop2) || digitalRead(estop3) || digitalRead(estop4)
    */
@@ -68,7 +68,7 @@ void loop() {
     delay(250);
     digitalWrite(lightPin, HIGH);
     delay(250);
-    flag = false;
+    vehicle_engaged = false;
   }
 
   // Checks for estop button press event
