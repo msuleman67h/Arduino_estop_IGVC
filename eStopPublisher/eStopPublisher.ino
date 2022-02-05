@@ -1,7 +1,7 @@
-///*
-// * E Stop Publisher
-// * Author: Maxwell Nguyen, Roshan Cheriyan, Malachai Smith
-// * Author for led Maxwell Nguyen
+/*
+ * E Stop Publisher
+ * Author: Muhammad Suleman, Maxwell Nguyen, Roshan Cheriyan, Malachai Smith
+ */
 
 #include <ros.h>
 
@@ -26,13 +26,15 @@ int estop1 = 2; //E-Stop Pin (D2)
 int estop2 = 3; //E-Stop Pin (D3)
 int estop3 = 4; //E-Stop Pin (D4) -- SEE WHAT PINS ARE AVAILABLE. COULD DAISY CHAIN THE ESTOPS TOGETHER TO ONE PIN
 int estop4 = 5; //E-Stop Pin (D5)
-bool flag = false;
+bool vehicle_engaged = false;
 
 void CheckAutonomousCallback(const std_msgs::Bool & vehicle_engage_msg) {
-   flag = vehicle_engage_msg.data;
+   vehicle_engaged = vehicle_engage_msg.data;
 }
 
 void setup() {
+  //Serial.begin(57600);
+  
   nh.initNode();
   pinMode(lightPin, OUTPUT);
   pinMode(estop1, INPUT);
@@ -47,15 +49,24 @@ void setup() {
 //Main loop that the program runs
 void loop() {
 
-  bool estopBtnState = digitalRead(estop1) || digitalRead(
-    estop2) || digitalRead(estop3) || digitalRead(estop4);
+  bool estopBtnState = digitalRead(estop1);
+  /**
+   * || digitalRead(
+    estop2) || digitalRead(estop3) || digitalRead(estop4)
+   */
+  //Serial.println(estopBtnState);
      
   // Makes the light in stead state
-  digitalWrite(lightPin, HIGH);
-  
-  if (flag && estopBtnState) {
+  digitalWrite(lightPin, LOW);
+
+
+  /*
+   * If vehicle_engaged is true and estop button is not presses. 
+   * (estopBtnState = LOW) is pressed and (estopBtnState == HIGH)
+   */
+  if (vehicle_engaged && estopBtnState) {
     delay(250);
-    digitalWrite(lightPin, LOW);
+    digitalWrite(lightPin, HIGH);
     delay(250);
     flag = false;
   }
