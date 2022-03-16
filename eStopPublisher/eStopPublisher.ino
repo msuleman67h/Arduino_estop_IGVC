@@ -23,6 +23,7 @@ ros::Subscriber < std_msgs::Bool > vehicle_engage("vehicle/engage", & CheckAuton
 //Defines the arduino pins
 int lightPin = 9; //Output Signal (D4)
 int estopPin = 2; //E-Stop Pin (D2_
+int wirelessEstopPin = 5;
 bool vehicle_engaged = false;
 
 // Button Debounce related variable
@@ -37,10 +38,11 @@ void CheckAutonomousCallback(const std_msgs::Bool & vehicle_engage_msg) {
 }
 
 void setup() {
-  //Serial.begin(57600);
+  Serial.begin(57600);
   nh.initNode();
   pinMode(lightPin, OUTPUT);
   pinMode(estopPin, INPUT);
+  pinMode(wirelessEstopPin, INPUT);
 
   nh.advertise(estop_pub);
   nh.subscribe(vehicle_engage);
@@ -49,7 +51,7 @@ void setup() {
 //Main loop that the program runs
 void loop() {
 
-  int reading = digitalRead(estopPin);
+  int reading = digitalRead(estopPin) & digitalRead(wirelessEstopPin);
      
   // Makes the light in stead state
   digitalWrite(lightPin, LOW);
@@ -80,6 +82,7 @@ void loop() {
     vehicle_engaged = false;
   }
 
+  Serial.println(estopBtnState);
   // Checks for estop button press event
   if (estopBtnState) {
     stop_gem_car.data = false;
