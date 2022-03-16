@@ -38,7 +38,6 @@ void CheckAutonomousCallback(const std_msgs::Bool & vehicle_engage_msg) {
 }
 
 void setup() {
-  Serial.begin(57600);
   nh.initNode();
   pinMode(lightPin, OUTPUT);
   pinMode(estopPin, INPUT);
@@ -82,7 +81,6 @@ void loop() {
     vehicle_engaged = false;
   }
 
-  Serial.println(estopBtnState);
   // Checks for estop button press event
   if (estopBtnState) {
     stop_gem_car.data = false;
